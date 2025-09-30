@@ -40,7 +40,6 @@ async function getRepositoryInfo() {
             git.getRemotes(true),
             git.branch()
         ]);
-        // Get repository name from current directory or remote
         let repoName = path_1.default.basename(process.cwd());
         if (remotes.length > 0) {
             const originUrl = remotes.find(r => r.name === 'origin')?.refs?.fetch;
@@ -121,7 +120,6 @@ async function removeGitLock() {
         await fs_1.promises.unlink(lockPath);
     }
     catch {
-        // Lock file doesn't exist or couldn't be removed
     }
 }
 //# sourceMappingURL=git.js.map

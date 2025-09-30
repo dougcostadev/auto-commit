@@ -14,7 +14,6 @@ const config_1 = require("./commands/config");
 const run_1 = require("./commands/run");
 const stats_1 = require("./commands/stats");
 const program = new commander_1.Command();
-// ASCII Art Header
 function showHeader() {
     console.clear();
     const title = figlet_1.default.textSync('DAC', {
@@ -34,7 +33,6 @@ function showHeader() {
         backgroundColor: '#1e1e1e'
     }));
 }
-// CLI Configuration
 program
     .name('dac')
     .description('🚀 Doug Auto Commit - Universal Git Commit Automation')
@@ -47,7 +45,6 @@ program
         showHeader();
     }
 });
-// Commands
 program
     .command('init')
     .description('🎯 Initialize DAC in current repository')
@@ -76,7 +73,6 @@ program
     .option('-d, --detailed', 'show detailed statistics')
     .option('-h, --history', 'show processing history')
     .action(stats_1.statsCommand);
-// Global error handler
 program.exitOverride();
 try {
     program.parse();
@@ -87,7 +83,6 @@ catch (error) {
         process.exit(1);
     }
 }
-// Show help if no command provided
 if (!process.argv.slice(2).length) {
     showHeader();
     program.outputHelp();

@@ -13,6 +13,7 @@ export interface DACConfig {
         skipLargeFiles: boolean;
         maxFileSize: number;
     };
+    maxPushSize: number;
     fileTypes: Record<FileType, FileTypeConfig>;
 }
 export interface FileTypeConfig {

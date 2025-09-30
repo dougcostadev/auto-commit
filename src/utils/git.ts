@@ -39,7 +39,6 @@ export async function getRepositoryInfo(): Promise<RepositoryInfo> {
       git.branch()
     ]);
 
-    // Get repository name from current directory or remote
     let repoName = path.basename(process.cwd());
     
     if (remotes.length > 0) {
@@ -126,6 +125,5 @@ export async function removeGitLock(): Promise<void> {
     const lockPath = path.join(process.cwd(), '.git', 'index.lock');
     await fs.unlink(lockPath);
   } catch {
-    // Lock file doesn't exist or couldn't be removed
   }
 }

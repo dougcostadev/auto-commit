@@ -28,7 +28,6 @@ export class VisualProgress {
   public update(increment: number = 1, currentFile?: string): void {
     this.current = Math.min(this.current + increment, this.total);
     
-    // Throttle updates to avoid spam (max 10 updates per second)
     const now = Date.now();
     if (now - this.lastUpdate < 100 && this.current < this.total) {
       return;
@@ -44,7 +43,7 @@ export class VisualProgress {
     if (message) {
       console.log(`\n${message}`);
     } else {
-      console.log(); // Just add a newline
+      console.log();
     }
   }
 
@@ -53,12 +52,10 @@ export class VisualProgress {
     const filled = Math.floor((this.current / this.total) * this.options.width);
     const empty = this.options.width - filled;
     
-    // Create progress bar with filled and empty blocks
     const filledBlocks = chalk.green('█'.repeat(filled));
     const emptyBlocks = chalk.gray('░'.repeat(empty));
     const progressBar = `[${filledBlocks}${emptyBlocks}]`;
     
-    // Progress stats
     let statsText = '';
     if (this.options.showStats) {
       const elapsed = (Date.now() - this.startTime) / 1000;
@@ -71,7 +68,6 @@ export class VisualProgress {
                  (eta > 0 && eta < 3600 ? chalk.gray(` • ETA: ${this.formatTime(eta)}`) : '');
     }
     
-    // Current file info
     let fileInfo = '';
     if (this.options.showCurrentFile && currentFile) {
       const maxLength = 60;
@@ -81,10 +77,9 @@ export class VisualProgress {
       fileInfo = `\n${chalk.gray('📁')} ${chalk.white(displayPath)}`;
     }
     
-    // Clear previous lines and render new progress
-    process.stdout.write('\r\x1b[K'); // Clear current line
+    process.stdout.write('\r\x1b[K');
     if (this.options.showCurrentFile) {
-      process.stdout.write('\x1b[1A\r\x1b[K'); // Move up and clear previous file line
+      process.stdout.write('\x1b[1A\r\x1b[K');
     }
     
     process.stdout.write(`${progressBar}${statsText}${fileInfo}`);
@@ -107,9 +102,8 @@ export class BatchProgress {
   }
   
   public startBatch(batchNumber: number, batchSize: number, batchName: string): VisualProgress {
-    // Show batch header
     console.log(chalk.cyan(`\n📦 Batch ${batchNumber}/${this.totalBatches}: ${batchName}`));
-    console.log(); // Space for file info
+    console.log();
     
     this.currentBatchProgress = new VisualProgress(batchSize, {
       width: 50,
@@ -160,13 +154,11 @@ export function formatFilePath(filePath: string, maxLength: number = 50): string
   
   const parts = filePath.split('/');
   if (parts.length === 1) {
-    // Single file, truncate with ellipsis
     return '...' + filePath.slice(-maxLength + 3);
   }
   
-  // Try to show filename and some parent directories
   const filename = parts[parts.length - 1];
-  const remaining = maxLength - filename.length - 4; // 4 for '.../'
+  const remaining = maxLength - filename.length - 4;
   
   if (remaining > 0) {
     const parentPath = parts.slice(0, -1).join('/');

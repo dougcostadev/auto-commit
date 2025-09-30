@@ -14,7 +14,6 @@ const git_1 = require("../utils/git");
 async function initCommand(options) {
     try {
         console.log(chalk_1.default.cyan('\n🎯 Initializing Doug Auto Commit...\n'));
-        // Check if we're in a Git repository
         const spinner = (0, ora_1.default)('Checking Git repository...').start();
         const isGitRepo = await (0, git_1.checkGitRepository)();
         if (!isGitRepo) {
@@ -24,8 +23,7 @@ async function initCommand(options) {
         }
         const repoInfo = await (0, git_1.getRepositoryInfo)();
         spinner.succeed(`Git repository detected: ${repoInfo.name}`);
-        // Check if config already exists
-        const configPath = path_1.default.join(process.cwd(), '.dac.json');
+        const configPath = path_1.default.join(process.cwd(), '.dacrc.json');
         const configExists = await fs_1.promises.access(configPath).then(() => true).catch(() => false);
         if (configExists && !options.force) {
             const { overwrite } = await inquirer_1.default.prompt([
@@ -41,7 +39,6 @@ async function initCommand(options) {
                 return;
             }
         }
-        // Interactive setup
         console.log(chalk_1.default.green('\n🔧 Configuration Setup\n'));
         const answers = await inquirer_1.default.prompt([
             {
@@ -82,12 +79,7 @@ async function initCommand(options) {
                 type: 'list',
                 name: 'batchStrategy',
                 message: 'Choose batch processing strategy:',
-                choices: [
-                    { name: '🚀 Aggressive (Large batches, faster processing)', value: 'aggressive' },
-                    { name: '⚖️  Balanced (Medium batches, good performance)', value: 'balanced' },
-                    { name: '🔍 Conservative (Small batches, more granular commits)', value: 'conservative' },
-                    { name: '🎛️  Custom (I\'ll configure manually)', value: 'custom' }
-                ]
+                choices: (0, config_1.getPresetInfo)()
             },
             {
                 type: 'confirm',
@@ -118,19 +110,19 @@ async function initCommand(options) {
             catch {
                 // .gitignore doesn't exist, create it
             }
-            if (!gitignoreContent.includes('.dac.json')) {
+            if (!gitignoreContent.includes('.dacrc.json')) {
                 const addGitignore = await inquirer_1.default.prompt([
                     {
                         type: 'confirm',
                         name: 'add',
-                        message: 'Add .dac.json to .gitignore? (recommended)',
+                        message: 'Add .dacrc.json to .gitignore? (recommended)',
                         default: true
                     }
                 ]);
                 if (addGitignore.add) {
-                    const newContent = gitignoreContent + (gitignoreContent ? '\n' : '') + '\n# DAC Configuration\n.dac.json\n';
+                    const newContent = gitignoreContent + (gitignoreContent ? '\n' : '') + '\n# DAC Configuration\n.dacrc.json\n';
                     await fs_1.promises.writeFile(gitignorePath, newContent);
-                    console.log(chalk_1.default.green('✅ Added .dac.json to .gitignore'));
+                    console.log(chalk_1.default.green('✅ Added .dacrc.json to .gitignore'));
                 }
             }
         }

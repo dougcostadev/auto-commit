@@ -12,7 +12,6 @@ import { statsCommand } from './commands/stats';
 
 const program = new Command();
 
-// ASCII Art Header
 function showHeader() {
   console.clear();
   const title = figlet.textSync('DAC', {
@@ -40,7 +39,6 @@ function showHeader() {
   );
 }
 
-// CLI Configuration
 program
   .name('dac')
   .description('🚀 Doug Auto Commit - Universal Git Commit Automation')
@@ -54,7 +52,6 @@ program
     }
   });
 
-// Commands
 program
   .command('init')
   .description('🎯 Initialize DAC in current repository')
@@ -87,7 +84,6 @@ program
   .option('-h, --history', 'show processing history')
   .action(statsCommand);
 
-// Global error handler
 program.exitOverride();
 
 try {
@@ -99,7 +95,6 @@ try {
   }
 }
 
-// Show help if no command provided
 if (!process.argv.slice(2).length) {
   showHeader();
   program.outputHelp();

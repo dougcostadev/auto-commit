@@ -1,13 +1,30 @@
 import { DACConfig, FileType, FileTypeConfig } from '../types';
 
+export type BatchPreset = 'conservative' | 'balanced' | 'aggressive';
+
+export interface PresetMultipliers {
+  conservative: number;
+  balanced: number;
+  aggressive: number;
+}
+
+const BATCH_MULTIPLIERS: PresetMultipliers = {
+  conservative: 1,
+  balanced: 10,
+  aggressive: 100
+};
+
 export function createDefaultConfig(answers?: any): DACConfig {
+  const preset: BatchPreset = answers?.batchStrategy || 'balanced';
+  const multiplier = BATCH_MULTIPLIERS[preset];
+
   const defaultFileTypes: Record<FileType, FileTypeConfig> = {
     binary: {
       name: 'Binary Files',
       description: 'Executable files, compiled binaries, and machine code',
       extensions: ['.exe', '.dll', '.so', '.dylib', '.bin', '.app'],
       patterns: ['*.exe', '*.dll', '*.so', '*.dylib', '*.bin', '*.app'],
-      batchSize: 5,
+      batchSize: Math.max(1, 5 * multiplier),
       icon: '⚙️'
     },
     media: {
@@ -15,7 +32,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Images, videos, audio, and multimedia content',
       extensions: ['.jpg', '.png', '.gif', '.mp4', '.mp3', '.avi', '.mov', '.wav'],
       patterns: ['*.jpg', '*.png', '*.gif', '*.mp4', '*.mp3', '*.avi', '*.mov', '*.wav'],
-      batchSize: 3,
+      batchSize: Math.max(1, 3 * multiplier),
       icon: '🎨'
     },
     assets: {
@@ -23,7 +40,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Static assets, fonts, icons, and resources',
       extensions: ['.ttf', '.woff', '.svg', '.ico', '.eot', '.otf'],
       patterns: ['*.ttf', '*.woff*', '*.svg', '*.ico', '*.eot', '*.otf'],
-      batchSize: 10,
+      batchSize: Math.max(1, 10 * multiplier),
       icon: '📦'
     },
     archives: {
@@ -31,7 +48,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Compressed files and archives',
       extensions: ['.zip', '.rar', '.tar', '.gz', '.7z', '.bz2'],
       patterns: ['*.zip', '*.rar', '*.tar*', '*.gz', '*.7z', '*.bz2'],
-      batchSize: 2,
+      batchSize: Math.max(1, 2 * multiplier),
       icon: '📚'
     },
     source: {
@@ -39,7 +56,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Programming language source files',
       extensions: ['.js', '.ts', '.py', '.java', '.cpp', '.c', '.cs', '.php'],
       patterns: ['*.js', '*.ts', '*.py', '*.java', '*.cpp', '*.c', '*.cs', '*.php'],
-      batchSize: 15,
+      batchSize: Math.max(1, 15 * multiplier),
       icon: '💻'
     },
     web: {
@@ -47,7 +64,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'HTML, CSS, and web-related files',
       extensions: ['.html', '.css', '.scss', '.sass', '.less', '.jsx', '.vue'],
       patterns: ['*.html', '*.css', '*.scss', '*.sass', '*.less', '*.jsx', '*.vue'],
-      batchSize: 12,
+      batchSize: Math.max(1, 12 * multiplier),
       icon: '🌐'
     },
     mobile: {
@@ -55,7 +72,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Mobile development files',
       extensions: ['.swift', '.kt', '.dart', '.xaml'],
       patterns: ['*.swift', '*.kt', '*.dart', '*.xaml'],
-      batchSize: 10,
+      batchSize: Math.max(1, 10 * multiplier),
       icon: '📱'
     },
     database: {
@@ -63,7 +80,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Database files and SQL scripts',
       extensions: ['.sql', '.db', '.sqlite', '.mdb'],
       patterns: ['*.sql', '*.db', '*.sqlite*', '*.mdb'],
-      batchSize: 5,
+      batchSize: Math.max(1, 5 * multiplier),
       icon: '🗄️'
     },
     config: {
@@ -71,7 +88,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Configuration files and settings',
       extensions: ['.json', '.xml', '.yaml', '.yml', '.ini', '.conf', '.cfg'],
       patterns: ['*.json', '*.xml', '*.yaml', '*.yml', '*.ini', '*.conf', '*.cfg'],
-      batchSize: 8,
+      batchSize: Math.max(1, 8 * multiplier),
       icon: '⚙️'
     },
     docs: {
@@ -79,7 +96,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Documentation and text files',
       extensions: ['.md', '.txt', '.doc', '.docx', '.pdf', '.rtf'],
       patterns: ['*.md', '*.txt', '*.doc*', '*.pdf', '*.rtf'],
-      batchSize: 10,
+      batchSize: Math.max(1, 10 * multiplier),
       icon: '📝'
     },
     data: {
@@ -87,7 +104,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Data files and datasets',
       extensions: ['.csv', '.tsv', '.xls', '.xlsx', '.parquet'],
       patterns: ['*.csv', '*.tsv', '*.xls*', '*.parquet'],
-      batchSize: 5,
+      batchSize: Math.max(1, 5 * multiplier),
       icon: '📊'
     },
     system: {
@@ -95,7 +112,7 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'System and hidden files',
       extensions: ['.log', '.tmp', '.cache', '.lock'],
       patterns: ['*.log', '*.tmp', '*.cache', '*.lock', '.*'],
-      batchSize: 20,
+      batchSize: Math.max(1, 20 * multiplier),
       icon: '🔧'
     },
     misc: {
@@ -103,30 +120,19 @@ export function createDefaultConfig(answers?: any): DACConfig {
       description: 'Other files that don\'t fit in specific categories',
       extensions: [],
       patterns: ['*'],
-      batchSize: 10,
+      batchSize: Math.max(1, 10 * multiplier),
       icon: '📄'
     }
   };
 
-  const defaultBatchSizes: Record<FileType, number> = {
-    binary: 5,
-    media: 3,
-    assets: 10,
-    archives: 2,
-    source: 15,
-    web: 12,
-    mobile: 10,
-    database: 5,
-    config: 8,
-    docs: 10,
-    data: 5,
-    system: 20,
-    misc: 10
-  };
+  const batchSizes: Record<FileType, number> = {} as Record<FileType, number>;
+  Object.entries(defaultFileTypes).forEach(([type, config]) => {
+    batchSizes[type as FileType] = config.batchSize;
+  });
 
   return {
     version: '1.0.0',
-    batchSizes: defaultBatchSizes,
+    batchSizes: batchSizes,
     excludePatterns: [
       'node_modules/**',
       '.git/**',
@@ -145,8 +151,38 @@ export function createDefaultConfig(answers?: any): DACConfig {
       maxConcurrency: answers?.maxConcurrency || 3,
       retryFailedPushes: true,
       skipLargeFiles: true,
-      maxFileSize: 50 * 1024 * 1024 // 50MB
+      maxFileSize: 50 * 1024 * 1024
     },
+    maxPushSize: 1024 * 1024 * 1024,
     fileTypes: defaultFileTypes
   };
+}
+
+export function getPresetInfo(): Array<{value: BatchPreset, name: string, description: string}> {
+  return [
+    {
+      value: 'conservative',
+      name: '🐌 Conservative (Small batches)',
+      description: 'Small batches, many commits - Good for detailed history and code review'
+    },
+    {
+      value: 'balanced', 
+      name: '⚖️  Balanced (Medium batches)',
+      description: 'Medium batches, balanced commits - Good balance of organization and efficiency'
+    },
+    {
+      value: 'aggressive',
+      name: '🚀 Aggressive (Large batches)',
+      description: 'Large batches, few commits - Maximum efficiency, minimal commit count'
+    }
+  ];
+}
+
+export function getPresetDescription(preset: BatchPreset): string {
+  const presetInfo = getPresetInfo();
+  return presetInfo.find(p => p.value === preset)?.description || 'Unknown preset';
+}
+
+export function getPresetMultiplier(preset: BatchPreset): number {
+  return BATCH_MULTIPLIERS[preset];
 }
