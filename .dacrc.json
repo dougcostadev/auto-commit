@@ -1,0 +1,312 @@
+{
+  "version": "1.0.0",
+  "batchSizes": {
+    "binary": 500,
+    "media": 300,
+    "assets": 1000,
+    "archives": 200,
+    "source": 1500,
+    "web": 1200,
+    "mobile": 1000,
+    "database": 500,
+    "config": 800,
+    "docs": 1000,
+    "data": 500,
+    "system": 2000,
+    "misc": 1000
+  },
+  "excludePatterns": [
+    "node_modules/**",
+    ".git/**",
+    "dist/**",
+    "build/**",
+    ".cache/**",
+    ".tmp/**",
+    "*.log"
+  ],
+  "commitMessage": {
+    "template": "feat: add {count} {type} files - {description}",
+    "useConventional": true
+  },
+  "processing": {
+    "parallel": true,
+    "maxConcurrency": 3,
+    "retryFailedPushes": true,
+    "skipLargeFiles": true,
+    "maxFileSize": 52428800
+  },
+  "maxPushSize": 1073741824,
+  "fileTypes": {
+    "binary": {
+      "name": "Binary Files",
+      "description": "Executable files, compiled binaries, and machine code",
+      "extensions": [
+        ".exe",
+        ".dll",
+        ".so",
+        ".dylib",
+        ".bin",
+        ".app"
+      ],
+      "patterns": [
+        "*.exe",
+        "*.dll",
+        "*.so",
+        "*.dylib",
+        "*.bin",
+        "*.app"
+      ],
+      "batchSize": 500,
+      "icon": "⚙️"
+    },
+    "media": {
+      "name": "Media Files",
+      "description": "Images, videos, audio, and multimedia content",
+      "extensions": [
+        ".jpg",
+        ".png",
+        ".gif",
+        ".mp4",
+        ".mp3",
+        ".avi",
+        ".mov",
+        ".wav"
+      ],
+      "patterns": [
+        "*.jpg",
+        "*.png",
+        "*.gif",
+        "*.mp4",
+        "*.mp3",
+        "*.avi",
+        "*.mov",
+        "*.wav"
+      ],
+      "batchSize": 300,
+      "icon": "🎨"
+    },
+    "assets": {
+      "name": "Asset Files",
+      "description": "Static assets, fonts, icons, and resources",
+      "extensions": [
+        ".ttf",
+        ".woff",
+        ".svg",
+        ".ico",
+        ".eot",
+        ".otf"
+      ],
+      "patterns": [
+        "*.ttf",
+        "*.woff*",
+        "*.svg",
+        "*.ico",
+        "*.eot",
+        "*.otf"
+      ],
+      "batchSize": 1000,
+      "icon": "📦"
+    },
+    "archives": {
+      "name": "Archive Files",
+      "description": "Compressed files and archives",
+      "extensions": [
+        ".zip",
+        ".rar",
+        ".tar",
+        ".gz",
+        ".7z",
+        ".bz2"
+      ],
+      "patterns": [
+        "*.zip",
+        "*.rar",
+        "*.tar*",
+        "*.gz",
+        "*.7z",
+        "*.bz2"
+      ],
+      "batchSize": 200,
+      "icon": "📚"
+    },
+    "source": {
+      "name": "Source Code",
+      "description": "Programming language source files",
+      "extensions": [
+        ".js",
+        ".ts",
+        ".py",
+        ".java",
+        ".cpp",
+        ".c",
+        ".cs",
+        ".php"
+      ],
+      "patterns": [
+        "*.js",
+        "*.ts",
+        "*.py",
+        "*.java",
+        "*.cpp",
+        "*.c",
+        "*.cs",
+        "*.php"
+      ],
+      "batchSize": 1500,
+      "icon": "💻"
+    },
+    "web": {
+      "name": "Web Files",
+      "description": "HTML, CSS, and web-related files",
+      "extensions": [
+        ".html",
+        ".css",
+        ".scss",
+        ".sass",
+        ".less",
+        ".jsx",
+        ".vue"
+      ],
+      "patterns": [
+        "*.html",
+        "*.css",
+        "*.scss",
+        "*.sass",
+        "*.less",
+        "*.jsx",
+        "*.vue"
+      ],
+      "batchSize": 1200,
+      "icon": "🌐"
+    },
+    "mobile": {
+      "name": "Mobile Files",
+      "description": "Mobile development files",
+      "extensions": [
+        ".swift",
+        ".kt",
+        ".dart",
+        ".xaml"
+      ],
+      "patterns": [
+        "*.swift",
+        "*.kt",
+        "*.dart",
+        "*.xaml"
+      ],
+      "batchSize": 1000,
+      "icon": "📱"
+    },
+    "database": {
+      "name": "Database Files",
+      "description": "Database files and SQL scripts",
+      "extensions": [
+        ".sql",
+        ".db",
+        ".sqlite",
+        ".mdb"
+      ],
+      "patterns": [
+        "*.sql",
+        "*.db",
+        "*.sqlite*",
+        "*.mdb"
+      ],
+      "batchSize": 500,
+      "icon": "🗄️"
+    },
+    "config": {
+      "name": "Configuration",
+      "description": "Configuration files and settings",
+      "extensions": [
+        ".json",
+        ".xml",
+        ".yaml",
+        ".yml",
+        ".ini",
+        ".conf",
+        ".cfg"
+      ],
+      "patterns": [
+        "*.json",
+        "*.xml",
+        "*.yaml",
+        "*.yml",
+        "*.ini",
+        "*.conf",
+        "*.cfg"
+      ],
+      "batchSize": 800,
+      "icon": "⚙️"
+    },
+    "docs": {
+      "name": "Documentation",
+      "description": "Documentation and text files",
+      "extensions": [
+        ".md",
+        ".txt",
+        ".doc",
+        ".docx",
+        ".pdf",
+        ".rtf"
+      ],
+      "patterns": [
+        "*.md",
+        "*.txt",
+        "*.doc*",
+        "*.pdf",
+        "*.rtf"
+      ],
+      "batchSize": 1000,
+      "icon": "📝"
+    },
+    "data": {
+      "name": "Data Files",
+      "description": "Data files and datasets",
+      "extensions": [
+        ".csv",
+        ".tsv",
+        ".xls",
+        ".xlsx",
+        ".parquet"
+      ],
+      "patterns": [
+        "*.csv",
+        "*.tsv",
+        "*.xls*",
+        "*.parquet"
+      ],
+      "batchSize": 500,
+      "icon": "📊"
+    },
+    "system": {
+      "name": "System Files",
+      "description": "System and hidden files",
+      "extensions": [
+        ".log",
+        ".tmp",
+        ".cache",
+        ".lock"
+      ],
+      "patterns": [
+        "*.log",
+        "*.tmp",
+        "*.cache",
+        "*.lock",
+        ".*"
+      ],
+      "batchSize": 2000,
+      "icon": "🔧"
+    },
+    "misc": {
+      "name": "Miscellaneous",
+      "description": "Other files that don't fit in specific categories",
+      "extensions": [],
+      "patterns": [
+        "*"
+      ],
+      "batchSize": 1000,
+      "icon": "📄"
+    }
+  }
+}
