@@ -25,12 +25,12 @@ export async function runCommand(options: CommandOptions): Promise<void> {
     console.log(chalk.cyan('🚀 Starting DAC batch commit automation...\n'));
 
     try {
-      spinner.start('⬇️  Pulling latest changes...');
+      console.log(chalk.blue('⬇️  Synchronizing repository...'));
       await pullFromRemote();
-      spinner.succeed('✅ Repository synchronized');
+      console.log(chalk.green('✅ Repository synchronized\n'));
     } catch (error: any) {
-      spinner.warn(`⚠️  Pull failed: ${error.message}`);
-      console.log(chalk.gray('   Continuing with local processing...'));
+      console.log(chalk.yellow(`⚠️  Pull failed: ${error.message}`));
+      console.log(chalk.gray('   Continuing with local processing...\n'));
     }
 
     const repoInfo = await getRepositoryInfo();

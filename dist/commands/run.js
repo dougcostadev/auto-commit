@@ -25,13 +25,13 @@ async function runCommand(options) {
         }
         console.log(chalk_1.default.cyan('🚀 Starting DAC batch commit automation...\n'));
         try {
-            spinner.start('⬇️  Pulling latest changes...');
+            console.log(chalk_1.default.blue('⬇️  Synchronizing repository...'));
             await (0, git_1.pullFromRemote)();
-            spinner.succeed('✅ Repository synchronized');
+            console.log(chalk_1.default.green('✅ Repository synchronized\n'));
         }
         catch (error) {
-            spinner.warn(`⚠️  Pull failed: ${error.message}`);
-            console.log(chalk_1.default.gray('   Continuing with local processing...'));
+            console.log(chalk_1.default.yellow(`⚠️  Pull failed: ${error.message}`));
+            console.log(chalk_1.default.gray('   Continuing with local processing...\n'));
         }
         const repoInfo = await (0, git_1.getRepositoryInfo)();
         console.log(chalk_1.default.blue('📋 Repository:'), chalk_1.default.white(repoInfo.name));

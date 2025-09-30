@@ -134,9 +134,17 @@ export async function pullFromRemote(): Promise<void> {
     if (error.message.includes('untracked working tree files would be overwritten')) {
       console.log('⚠️  Resolving untracked file conflicts automatically...');
       
+      process.stdout.write('   📋 Adding untracked files... ');
       await git.add('.');
+      console.log('✅ Done');
+      
+      process.stdout.write('   💾 Creating backup commit... ');
       await git.commit('Auto-commit untracked files before pull');
+      console.log('✅ Done');
+      
+      process.stdout.write('   ⬇️  Pulling remote changes... ');
       await git.pull();
+      console.log('✅ Done');
       
       console.log('✅ Conflicts resolved successfully');
     } else {
