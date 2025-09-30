@@ -176,13 +176,11 @@ async function processBatches(batches, config) {
         try {
             const progress = batchProgress.startBatch(i + 1, batch.files.length, batchName);
             const batchStartTime = Date.now();
-            for (let j = 0; j < batch.files.length; j++) {
-                progress.update(1);
-                await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
-            }
-            progress.finish();
             const filePaths = batch.files.map(f => f.path);
-            await (0, git_1.addFiles)(filePaths);
+            await (0, git_1.addFiles)(filePaths, (processed) => {
+                progress.setCurrent(processed);
+            });
+            progress.finish();
             await (0, git_1.createCommit)(batch.message);
             successCount++;
             commitsInCurrentPush++;
@@ -212,6 +210,7 @@ async function processBatches(batches, config) {
         }
         catch (error) {
             console.log(chalk_1.default.red(`❌ Failed: ${batch.message}`));
+            console.log(chalk_1.default.gray(`   Error: ${error.message}`));
             errors.push(`Batch ${i + 1}: ${error.message}`);
         }
     }

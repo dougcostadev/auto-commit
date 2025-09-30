@@ -12,6 +12,7 @@ export declare class VisualProgress {
     private lastUpdate;
     constructor(total: number, options?: ProgressBarOptions);
     update(increment?: number): void;
+    setCurrent(value: number): void;
     finish(message?: string): void;
     private render;
     private formatTime;

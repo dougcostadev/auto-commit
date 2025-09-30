@@ -30,6 +30,10 @@ class VisualProgress {
             this.render();
         }
     }
+    setCurrent(value) {
+        this.current = Math.min(value, this.total);
+        this.render();
+    }
     finish(message) {
         this.current = this.total;
         this.render();

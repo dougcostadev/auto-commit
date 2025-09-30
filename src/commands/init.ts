@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import ora from 'ora';
+import inquirer from 'inquirer';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { CommandOptions } from '../types';

@@ -74,11 +74,41 @@ export async function getUntrackedFiles(): Promise<string[]> {
   }
 }
 
-export async function addFiles(files: string[]): Promise<void> {
+export async function addFiles(
+  files: string[], 
+  onProgress?: (processed: number, total: number) => void
+): Promise<void> {
   const git = getGit();
   
   try {
-    await git.add(files);
+    const existingFiles = [];
+    for (const file of files) {
+      try {
+        await fs.access(file);
+        existingFiles.push(file);
+      } catch {
+        console.warn(`Warning: File not found: ${file}`);
+      }
+    }
+    
+    if (existingFiles.length === 0) {
+      throw new Error('No valid files to add');
+    }
+    
+    const chunkSize = 50; // Safe chunk size for command line
+    let processedFiles = 0;
+    
+    for (let i = 0; i < existingFiles.length; i += chunkSize) {
+      const chunk = existingFiles.slice(i, i + chunkSize);
+      await git.add(chunk);
+      processedFiles += chunk.length;
+      
+      if (onProgress) {
+        onProgress(processedFiles, existingFiles.length);
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
   } catch (error) {
     throw new Error(`Failed to add files: ${error}`);
   }

@@ -39,6 +39,11 @@ export class VisualProgress {
     }
   }
 
+  public setCurrent(value: number): void {
+    this.current = Math.min(value, this.total);
+    this.render();
+  }
+
   public finish(message?: string): void {
     this.current = this.total;
     this.render();

@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initCommand = initCommand;
-const inquirer_1 = __importDefault(require("inquirer"));
 const chalk_1 = __importDefault(require("chalk"));
 const ora_1 = __importDefault(require("ora"));
+const inquirer_1 = __importDefault(require("inquirer"));
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const config_1 = require("../core/config");

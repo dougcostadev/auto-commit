@@ -215,16 +215,14 @@ async function processBatches(batches: Array<{type: FileType, files: FileAnalysi
       
       const batchStartTime = Date.now();
       
-      for (let j = 0; j < batch.files.length; j++) {
-        progress.update(1);
-        
-        await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
-      }
+      const filePaths = batch.files.map(f => f.path);
+      
+      // Real progress during git add
+      await addFiles(filePaths, (processed) => {
+        progress.setCurrent(processed);
+      });
       
       progress.finish();
-      
-      const filePaths = batch.files.map(f => f.path);
-      await addFiles(filePaths);
       
       await createCommit(batch.message);
       successCount++;
@@ -262,6 +260,7 @@ async function processBatches(batches: Array<{type: FileType, files: FileAnalysi
       
     } catch (error: any) {
       console.log(chalk.red(`❌ Failed: ${batch.message}`));
+      console.log(chalk.gray(`   Error: ${error.message}`));
       errors.push(`Batch ${i + 1}: ${error.message}`);
     }
   }
