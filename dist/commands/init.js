@@ -94,13 +94,10 @@ async function initCommand(options) {
                 default: true
             }
         ]);
-        // Create configuration
         const setupSpinner = (0, ora_1.default)('Creating configuration...').start();
         const config = (0, config_1.createDefaultConfig)(answers);
-        // Write config file
         await fs_1.promises.writeFile(configPath, JSON.stringify(config, null, 2));
         setupSpinner.succeed('Configuration created successfully');
-        // Create .gitignore entry if needed
         try {
             const gitignorePath = path_1.default.join(process.cwd(), '.gitignore');
             let gitignoreContent = '';
@@ -108,7 +105,6 @@ async function initCommand(options) {
                 gitignoreContent = await fs_1.promises.readFile(gitignorePath, 'utf-8');
             }
             catch {
-                // .gitignore doesn't exist, create it
             }
             if (!gitignoreContent.includes('.dacrc.json')) {
                 const addGitignore = await inquirer_1.default.prompt([
@@ -127,15 +123,12 @@ async function initCommand(options) {
             }
         }
         catch (error) {
-            // Ignore .gitignore errors
         }
-        // Show success message
         console.log(chalk_1.default.green('\n🎉 DAC has been successfully initialized!\n') +
             chalk_1.default.white('Next steps:\n') +
             chalk_1.default.cyan('  • Run ') + chalk_1.default.yellow('dac run') + chalk_1.default.cyan(' to start batch processing\n') +
             chalk_1.default.cyan('  • Run ') + chalk_1.default.yellow('dac config') + chalk_1.default.cyan(' to modify settings\n') +
             chalk_1.default.cyan('  • Run ') + chalk_1.default.yellow('dac stats') + chalk_1.default.cyan(' to see repository analysis\n'));
-        // Show configuration summary
         console.log(chalk_1.default.white('\n📋 Configuration Summary:'));
         console.log(chalk_1.default.gray(`   Project Type: ${answers.projectType}`));
         console.log(chalk_1.default.gray(`   Batch Strategy: ${answers.batchStrategy}`));

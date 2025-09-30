@@ -1,7 +1,7 @@
 import { CommandOptions, FileAnalysis, FileType, ProcessingResult } from '../types';
 import { loadConfig } from '../utils/config';
 import { checkGitRepository, getUntrackedFiles, addFiles, createCommit, getRepositoryInfo, pushToRemote } from '../utils/git';
-import { BatchProgress, createFileTypeIcon, formatFilePath } from '../utils/progress';
+import { BatchProgress, createFileTypeIcon } from '../utils/progress';
 import chalk from 'chalk';
 import ora from 'ora';
 import { promises as fs } from 'fs';
@@ -216,10 +216,7 @@ async function processBatches(batches: Array<{type: FileType, files: FileAnalysi
       const batchStartTime = Date.now();
       
       for (let j = 0; j < batch.files.length; j++) {
-        const file = batch.files[j];
-        const fileName = formatFilePath(file.path, 60);
-        
-        progress.update(1, fileName);
+        progress.update(1);
         
         await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
       }

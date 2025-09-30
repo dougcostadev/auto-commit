@@ -1,6 +1,6 @@
 {
   "name": "@dougcostadev/auto-commit",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "🚀 Universal Git Commit Automation - Intelligent batch commits with file type detection",
   "main": "dist/cli.js",
   "bin": {

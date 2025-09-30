@@ -12,7 +12,6 @@ export class VisualProgress {
   private current: number = 0;
   private options: Required<ProgressBarOptions>;
   private startTime: number;
-  private lastUpdate: number = 0;
   
   constructor(total: number, options: ProgressBarOptions = {}) {
     this.total = total;
@@ -25,29 +24,20 @@ export class VisualProgress {
     };
   }
 
-  public update(increment: number = 1, currentFile?: string): void {
+  public update(increment: number = 1): void {
     this.current = Math.min(this.current + increment, this.total);
-    
-    const now = Date.now();
-    if (now - this.lastUpdate < 100 && this.current < this.total) {
-      return;
-    }
-    this.lastUpdate = now;
-    
-    this.render(currentFile);
   }
 
   public finish(message?: string): void {
     this.current = this.total;
     this.render();
+    process.stdout.write('\n');
     if (message) {
-      console.log(`\n${message}`);
-    } else {
-      console.log();
+      console.log(message);
     }
   }
 
-  private render(currentFile?: string): void {
+  private render(): void {
     const percentage = Math.floor((this.current / this.total) * 100);
     const filled = Math.floor((this.current / this.total) * this.options.width);
     const empty = this.options.width - filled;
@@ -68,21 +58,7 @@ export class VisualProgress {
                  (eta > 0 && eta < 3600 ? chalk.gray(` • ETA: ${this.formatTime(eta)}`) : '');
     }
     
-    let fileInfo = '';
-    if (this.options.showCurrentFile && currentFile) {
-      const maxLength = 60;
-      const displayPath = currentFile.length > maxLength 
-        ? '...' + currentFile.slice(-maxLength + 3)
-        : currentFile;
-      fileInfo = `\n${chalk.gray('📁')} ${chalk.white(displayPath)}`;
-    }
-    
-    process.stdout.write('\r\x1b[K');
-    if (this.options.showCurrentFile) {
-      process.stdout.write('\x1b[1A\r\x1b[K');
-    }
-    
-    process.stdout.write(`${progressBar}${statsText}${fileInfo}`);
+    process.stdout.write('\r\x1b[K' + progressBar + statsText);
   }
   
   private formatTime(seconds: number): string {
@@ -103,12 +79,11 @@ export class BatchProgress {
   
   public startBatch(batchNumber: number, batchSize: number, batchName: string): VisualProgress {
     console.log(chalk.cyan(`\n📦 Batch ${batchNumber}/${this.totalBatches}: ${batchName}`));
-    console.log();
     
     this.currentBatchProgress = new VisualProgress(batchSize, {
       width: 50,
       showPercentage: true,
-      showCurrentFile: true,
+      showCurrentFile: false,
       showStats: true
     });
     

@@ -11,12 +11,10 @@ const ora_1 = __importDefault(require("ora"));
 const inquirer_1 = __importDefault(require("inquirer"));
 async function configCommand(options) {
     try {
-        // Check if config exists
         if (!(await (0, config_1.configExists)())) {
             console.log(chalk_1.default.red('❌ DAC not initialized. Run'), chalk_1.default.yellow('dac init'), chalk_1.default.red('first.'));
             return;
         }
-        // Handle different config operations
         if (options.list) {
             await listConfiguration();
         }
@@ -30,7 +28,6 @@ async function configCommand(options) {
             await resetConfiguration();
         }
         else {
-            // Interactive config management
             await interactiveConfig();
         }
     }
@@ -45,12 +42,10 @@ async function listConfiguration() {
         const config = await (0, config_1.loadConfig)();
         spinner.succeed('Configuration loaded');
         console.log(chalk_1.default.cyan('\n📋 Current DAC Configuration:\n'));
-        // Basic Info
         console.log(chalk_1.default.blue('📦 Basic Information:'));
         console.log(`   Version: ${chalk_1.default.white(config.version)}`);
         console.log(`   Commit Template: ${chalk_1.default.white(config.commitMessage.template)}`);
         console.log(`   Conventional Commits: ${chalk_1.default.white(config.commitMessage.useConventional ? 'Yes' : 'No')}`);
-        // Processing Settings
         console.log(chalk_1.default.blue('\n⚡ Processing Settings:'));
         console.log(`   Parallel Processing: ${chalk_1.default.white(config.processing.parallel ? 'Yes' : 'No')}`);
         console.log(`   Max Concurrency: ${chalk_1.default.white(config.processing.maxConcurrency)}`);
@@ -58,12 +53,10 @@ async function listConfiguration() {
         console.log(`   Skip Large Files: ${chalk_1.default.white(config.processing.skipLargeFiles ? 'Yes' : 'No')}`);
         console.log(`   Max File Size: ${chalk_1.default.white(formatFileSize(config.processing.maxFileSize))}`);
         console.log(`   Max Push Size: ${chalk_1.default.white(formatFileSize(config.maxPushSize))}`);
-        // File Types and Batch Sizes
         console.log(chalk_1.default.blue('\n📁 File Types & Batch Sizes:'));
         Object.entries(config.fileTypes).forEach(([, typeConfig]) => {
             console.log(`   ${typeConfig.icon} ${chalk_1.default.white(typeConfig.name)}: ${chalk_1.default.yellow(typeConfig.batchSize)} files per batch`);
         });
-        // Exclude Patterns
         if (config.excludePatterns && config.excludePatterns.length > 0) {
             console.log(chalk_1.default.blue('\n🚫 Exclude Patterns:'));
             config.excludePatterns.forEach(pattern => {
@@ -95,7 +88,6 @@ async function setConfigValue(setValue) {
     const spinner = (0, ora_1.default)(`Setting ${key}...`).start();
     try {
         const config = await (0, config_1.loadConfig)();
-        // Parse value
         let parsedValue;
         try {
             parsedValue = JSON.parse(value);
@@ -103,9 +95,7 @@ async function setConfigValue(setValue) {
         catch {
             parsedValue = value;
         }
-        // Set nested value
         setNestedValue(config, key, parsedValue);
-        // Save config
         await (0, config_1.saveConfig)(config);
         spinner.succeed(`✅ Set ${key} = ${value}`);
     }
@@ -330,7 +320,6 @@ async function configureExcludePatterns(config) {
     await (0, config_1.saveConfig)(config);
     console.log(chalk_1.default.green('✅ Exclude patterns updated'));
 }
-// Helper functions
 function getNestedValue(obj, path) {
     return path.split('.').reduce((current, key) => current?.[key], obj);
 }
@@ -415,15 +404,12 @@ async function configurePreset(config) {
     ]);
     const spinner = (0, ora_1.default)('Applying preset configuration...').start();
     try {
-        // Recreate config with new preset
         const newConfig = (0, config_2.createDefaultConfig)({ batchStrategy: preset });
-        // Keep existing settings but update batch sizes
         newConfig.commitMessage = config.commitMessage;
         newConfig.processing = config.processing;
         newConfig.excludePatterns = config.excludePatterns;
         await (0, config_1.saveConfig)(newConfig);
         spinner.succeed(`✅ Applied ${preset} preset successfully`);
-        // Show what changed
         console.log(chalk_1.default.cyan('\n📊 New batch sizes:'));
         Object.entries(newConfig.fileTypes).forEach(([, typeConfig]) => {
             console.log(`   ${typeConfig.icon} ${typeConfig.name}: ${chalk_1.default.yellow(typeConfig.batchSize)} files per batch`);

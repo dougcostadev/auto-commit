@@ -99,15 +99,12 @@ export async function initCommand(options: CommandOptions): Promise<void> {
       }
     ]);
 
-    // Create configuration
     const setupSpinner = ora('Creating configuration...').start();
     const config = createDefaultConfig(answers);
     
-    // Write config file
     await fs.writeFile(configPath, JSON.stringify(config, null, 2));
     setupSpinner.succeed('Configuration created successfully');
 
-    // Create .gitignore entry if needed
     try {
       const gitignorePath = path.join(process.cwd(), '.gitignore');
       let gitignoreContent = '';
@@ -115,7 +112,6 @@ export async function initCommand(options: CommandOptions): Promise<void> {
       try {
         gitignoreContent = await fs.readFile(gitignorePath, 'utf-8');
       } catch {
-        // .gitignore doesn't exist, create it
       }
       
       if (!gitignoreContent.includes('.dacrc.json')) {
@@ -135,10 +131,8 @@ export async function initCommand(options: CommandOptions): Promise<void> {
         }
       }
     } catch (error) {
-      // Ignore .gitignore errors
     }
 
-    // Show success message
     console.log(
       chalk.green('\n🎉 DAC has been successfully initialized!\n') +
       chalk.white('Next steps:\n') +
@@ -147,7 +141,6 @@ export async function initCommand(options: CommandOptions): Promise<void> {
       chalk.cyan('  • Run ') + chalk.yellow('dac stats') + chalk.cyan(' to see repository analysis\n')
     );
 
-    // Show configuration summary
     console.log(chalk.white('\n📋 Configuration Summary:'));
     console.log(chalk.gray(`   Project Type: ${answers.projectType}`));
     console.log(chalk.gray(`   Batch Strategy: ${answers.batchStrategy}`));

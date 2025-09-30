@@ -7,13 +7,11 @@ import inquirer from 'inquirer';
 
 export async function configCommand(options: CommandOptions): Promise<void> {
   try {
-    // Check if config exists
     if (!(await configExists())) {
       console.log(chalk.red('❌ DAC not initialized. Run'), chalk.yellow('dac init'), chalk.red('first.'));
       return;
     }
 
-    // Handle different config operations
     if (options.list) {
       await listConfiguration();
     } else if (options.get) {
@@ -23,7 +21,6 @@ export async function configCommand(options: CommandOptions): Promise<void> {
     } else if (options.reset) {
       await resetConfiguration();
     } else {
-      // Interactive config management
       await interactiveConfig();
     }
 
@@ -42,13 +39,11 @@ async function listConfiguration(): Promise<void> {
     
     console.log(chalk.cyan('\n📋 Current DAC Configuration:\n'));
     
-    // Basic Info
     console.log(chalk.blue('📦 Basic Information:'));
     console.log(`   Version: ${chalk.white(config.version)}`);
     console.log(`   Commit Template: ${chalk.white(config.commitMessage.template)}`);
     console.log(`   Conventional Commits: ${chalk.white(config.commitMessage.useConventional ? 'Yes' : 'No')}`);
     
-    // Processing Settings
     console.log(chalk.blue('\n⚡ Processing Settings:'));
     console.log(`   Parallel Processing: ${chalk.white(config.processing.parallel ? 'Yes' : 'No')}`);
     console.log(`   Max Concurrency: ${chalk.white(config.processing.maxConcurrency)}`);
@@ -57,13 +52,11 @@ async function listConfiguration(): Promise<void> {
     console.log(`   Max File Size: ${chalk.white(formatFileSize(config.processing.maxFileSize))}`);
     console.log(`   Max Push Size: ${chalk.white(formatFileSize(config.maxPushSize))}`);
     
-    // File Types and Batch Sizes
     console.log(chalk.blue('\n📁 File Types & Batch Sizes:'));
     Object.entries(config.fileTypes).forEach(([, typeConfig]) => {
       console.log(`   ${typeConfig.icon} ${chalk.white(typeConfig.name)}: ${chalk.yellow(typeConfig.batchSize)} files per batch`);
     });
     
-    // Exclude Patterns
     if (config.excludePatterns && config.excludePatterns.length > 0) {
       console.log(chalk.blue('\n🚫 Exclude Patterns:'));
       config.excludePatterns.forEach(pattern => {
@@ -103,7 +96,6 @@ async function setConfigValue(setValue: string): Promise<void> {
   try {
     const config = await loadConfig();
     
-    // Parse value
     let parsedValue: any;
     try {
       parsedValue = JSON.parse(value);
@@ -111,10 +103,8 @@ async function setConfigValue(setValue: string): Promise<void> {
       parsedValue = value;
     }
     
-    // Set nested value
     setNestedValue(config, key, parsedValue);
     
-    // Save config
     await saveConfig(config);
     
     spinner.succeed(`✅ Set ${key} = ${value}`);
@@ -370,7 +360,6 @@ async function configureExcludePatterns(config: DACConfig): Promise<void> {
   console.log(chalk.green('✅ Exclude patterns updated'));
 }
 
-// Helper functions
 function getNestedValue(obj: any, path: string): any {
   return path.split('.').reduce((current, key) => current?.[key], obj);
 }
@@ -467,10 +456,8 @@ async function configurePreset(config: DACConfig): Promise<void> {
   const spinner = ora('Applying preset configuration...').start();
   
   try {
-    // Recreate config with new preset
     const newConfig = createDefaultConfig({ batchStrategy: preset });
     
-    // Keep existing settings but update batch sizes
     newConfig.commitMessage = config.commitMessage;
     newConfig.processing = config.processing;
     newConfig.excludePatterns = config.excludePatterns;
@@ -479,7 +466,6 @@ async function configurePreset(config: DACConfig): Promise<void> {
     
     spinner.succeed(`✅ Applied ${preset} preset successfully`);
     
-    // Show what changed
     console.log(chalk.cyan('\n📊 New batch sizes:'));
     Object.entries(newConfig.fileTypes).forEach(([, typeConfig]) => {
       console.log(`   ${typeConfig.icon} ${typeConfig.name}: ${chalk.yellow(typeConfig.batchSize)} files per batch`);

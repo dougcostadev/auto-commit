@@ -9,9 +9,8 @@ export declare class VisualProgress {
     private current;
     private options;
     private startTime;
-    private lastUpdate;
     constructor(total: number, options?: ProgressBarOptions);
-    update(increment?: number, currentFile?: string): void;
+    update(increment?: number): void;
     finish(message?: string): void;
     private render;
     private formatTime;

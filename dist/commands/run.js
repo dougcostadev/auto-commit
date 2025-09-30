@@ -177,9 +177,7 @@ async function processBatches(batches, config) {
             const progress = batchProgress.startBatch(i + 1, batch.files.length, batchName);
             const batchStartTime = Date.now();
             for (let j = 0; j < batch.files.length; j++) {
-                const file = batch.files[j];
-                const fileName = (0, progress_1.formatFilePath)(file.path, 60);
-                progress.update(1, fileName);
+                progress.update(1);
                 await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
             }
             progress.finish();
