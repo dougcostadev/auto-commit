@@ -12,6 +12,7 @@ export class VisualProgress {
   private current: number = 0;
   private options: Required<ProgressBarOptions>;
   private startTime: number;
+  private lastUpdate: number = 0;
   
   constructor(total: number, options: ProgressBarOptions = {}) {
     this.total = total;
@@ -26,6 +27,16 @@ export class VisualProgress {
 
   public update(increment: number = 1): void {
     this.current = Math.min(this.current + increment, this.total);
+    
+    const now = Date.now();
+    const timeDiff = now - this.lastUpdate;
+    
+    const shouldUpdate = this.current === this.total || timeDiff > 2000;
+    
+    if (shouldUpdate) {
+      this.lastUpdate = now;
+      this.render();
+    }
   }
 
   public finish(message?: string): void {

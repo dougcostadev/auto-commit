@@ -1,4 +1,3 @@
-import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
 import { promises as fs } from 'fs';

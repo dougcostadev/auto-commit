@@ -10,6 +10,7 @@ const chalk_1 = __importDefault(require("chalk"));
 class VisualProgress {
     constructor(total, options = {}) {
         this.current = 0;
+        this.lastUpdate = 0;
         this.total = total;
         this.startTime = Date.now();
         this.options = {
@@ -21,6 +22,13 @@ class VisualProgress {
     }
     update(increment = 1) {
         this.current = Math.min(this.current + increment, this.total);
+        const now = Date.now();
+        const timeDiff = now - this.lastUpdate;
+        const shouldUpdate = this.current === this.total || timeDiff > 2000;
+        if (shouldUpdate) {
+            this.lastUpdate = now;
+            this.render();
+        }
     }
     finish(message) {
         this.current = this.total;
