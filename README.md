@@ -1,4 +1,4 @@
-# 🚀 Doug Auto Commit (DAC)
+# 🚀 Auto Commit (DAC)
 
 **Universal Git Commit Automation CLI Tool**
 
@@ -146,7 +146,7 @@ DAC creates a `.dac.json` configuration file in your repository:
 ╚═════╝  ╚═╝  ╚═╝  ╚═════╝
 
 ┌─────────────────────────────────────────────────────┐
-│  🚀 Doug Auto Commit v1.0.0                       │
+│  🚀 Auto Commit v1.0.0                       │
 │  Universal Git Commit Automation                   │
 │  https://github.com/dougcostadev/auto-commit       │
 └─────────────────────────────────────────────────────┘
@@ -210,7 +210,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/dougcostadev/auto-commit/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/dougcostadev/auto-commit/discussions)
-- **Email**: douglas@dougcostadev.com
+- **Email**: douglas.codebr@gmail.com
 
 ---
 
