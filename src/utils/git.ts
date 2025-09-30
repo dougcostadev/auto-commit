@@ -125,6 +125,26 @@ export async function createCommit(message: string): Promise<string> {
   }
 }
 
+export async function pullFromRemote(): Promise<void> {
+  const git = getGit();
+  
+  try {
+    await git.pull();
+  } catch (error: any) {
+    if (error.message.includes('untracked working tree files would be overwritten')) {
+      console.log('⚠️  Resolving untracked file conflicts automatically...');
+      
+      await git.add('.');
+      await git.commit('Auto-commit untracked files before pull');
+      await git.pull();
+      
+      console.log('✅ Conflicts resolved successfully');
+    } else {
+      throw new Error(`Failed to pull: ${error}`);
+    }
+  }
+}
+
 export async function pushToRemote(remote: string = 'origin', branch?: string): Promise<void> {
   const git = getGit();
   

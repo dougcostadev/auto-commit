@@ -24,6 +24,15 @@ async function runCommand(options) {
             return;
         }
         console.log(chalk_1.default.cyan('🚀 Starting DAC batch commit automation...\n'));
+        try {
+            spinner.start('⬇️  Pulling latest changes...');
+            await (0, git_1.pullFromRemote)();
+            spinner.succeed('✅ Repository synchronized');
+        }
+        catch (error) {
+            spinner.warn(`⚠️  Pull failed: ${error.message}`);
+            console.log(chalk_1.default.gray('   Continuing with local processing...'));
+        }
         const repoInfo = await (0, git_1.getRepositoryInfo)();
         console.log(chalk_1.default.blue('📋 Repository:'), chalk_1.default.white(repoInfo.name));
         console.log(chalk_1.default.blue('🌿 Branch:'), chalk_1.default.white(repoInfo.branch));
@@ -189,10 +198,14 @@ async function processBatches(batches, config) {
             batchProgress.finishBatch(`Committed ${batch.files.length} files (${formatFileSize(batchSize)})`);
             batchProgress.showBatchSummary(batch.files.length, batchDuration);
             const isLastBatch = i === batches.length - 1;
-            const shouldPush = currentPushSize >= maxPushSizeBytes || isLastBatch;
+            const pushSizeReached = currentPushSize >= maxPushSizeBytes;
+            const shouldPush = pushSizeReached || isLastBatch;
+            const pushProgress = ((currentPushSize / maxPushSizeBytes) * 100).toFixed(1);
+            console.log(chalk_1.default.gray(`   Push size: ${formatFileSize(currentPushSize)} / ${formatFileSize(maxPushSizeBytes)} (${pushProgress}%)`));
             if (shouldPush && commitsInCurrentPush > 0) {
                 totalPushes++;
-                console.log(chalk_1.default.cyan(`\n🚀 Push ${totalPushes}: Pushing ${commitsInCurrentPush} commits (${formatFileSize(currentPushSize)})...`));
+                const pushReason = pushSizeReached ? 'size limit reached' : 'final batch';
+                console.log(chalk_1.default.cyan(`\n🚀 Push ${totalPushes}: ${commitsInCurrentPush} commits (${formatFileSize(currentPushSize)}) - ${pushReason}`));
                 try {
                     await (0, git_1.pushToRemote)();
                     console.log(chalk_1.default.green(`✅ Push ${totalPushes} successful!`));

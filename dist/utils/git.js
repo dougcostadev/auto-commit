@@ -9,6 +9,7 @@ exports.getRepositoryInfo = getRepositoryInfo;
 exports.getUntrackedFiles = getUntrackedFiles;
 exports.addFiles = addFiles;
 exports.createCommit = createCommit;
+exports.pullFromRemote = pullFromRemote;
 exports.pushToRemote = pushToRemote;
 exports.isGitLockActive = isGitLockActive;
 exports.removeGitLock = removeGitLock;
@@ -112,6 +113,24 @@ async function createCommit(message) {
     }
     catch (error) {
         throw new Error(`Failed to create commit: ${error}`);
+    }
+}
+async function pullFromRemote() {
+    const git = getGit();
+    try {
+        await git.pull();
+    }
+    catch (error) {
+        if (error.message.includes('untracked working tree files would be overwritten')) {
+            console.log('⚠️  Resolving untracked file conflicts automatically...');
+            await git.add('.');
+            await git.commit('Auto-commit untracked files before pull');
+            await git.pull();
+            console.log('✅ Conflicts resolved successfully');
+        }
+        else {
+            throw new Error(`Failed to pull: ${error}`);
+        }
     }
 }
 async function pushToRemote(remote = 'origin', branch) {

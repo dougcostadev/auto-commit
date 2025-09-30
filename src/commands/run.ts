@@ -1,6 +1,6 @@
 import { CommandOptions, FileAnalysis, FileType, ProcessingResult } from '../types';
 import { loadConfig } from '../utils/config';
-import { checkGitRepository, getUntrackedFiles, addFiles, createCommit, getRepositoryInfo, pushToRemote } from '../utils/git';
+import { checkGitRepository, getUntrackedFiles, addFiles, createCommit, getRepositoryInfo, pushToRemote, pullFromRemote } from '../utils/git';
 import { BatchProgress, createFileTypeIcon } from '../utils/progress';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -23,6 +23,15 @@ export async function runCommand(options: CommandOptions): Promise<void> {
     }
 
     console.log(chalk.cyan('🚀 Starting DAC batch commit automation...\n'));
+
+    try {
+      spinner.start('⬇️  Pulling latest changes...');
+      await pullFromRemote();
+      spinner.succeed('✅ Repository synchronized');
+    } catch (error: any) {
+      spinner.warn(`⚠️  Pull failed: ${error.message}`);
+      console.log(chalk.gray('   Continuing with local processing...'));
+    }
 
     const repoInfo = await getRepositoryInfo();
     console.log(chalk.blue('📋 Repository:'), chalk.white(repoInfo.name));
@@ -234,12 +243,17 @@ async function processBatches(batches: Array<{type: FileType, files: FileAnalysi
       batchProgress.showBatchSummary(batch.files.length, batchDuration);
       
       const isLastBatch = i === batches.length - 1;
-      const shouldPush = currentPushSize >= maxPushSizeBytes || isLastBatch;
+      const pushSizeReached = currentPushSize >= maxPushSizeBytes;
+      const shouldPush = pushSizeReached || isLastBatch;
+      
+      const pushProgress = ((currentPushSize / maxPushSizeBytes) * 100).toFixed(1);
+      console.log(chalk.gray(`   Push size: ${formatFileSize(currentPushSize)} / ${formatFileSize(maxPushSizeBytes)} (${pushProgress}%)`));
       
       if (shouldPush && commitsInCurrentPush > 0) {
         totalPushes++;
         
-        console.log(chalk.cyan(`\n🚀 Push ${totalPushes}: Pushing ${commitsInCurrentPush} commits (${formatFileSize(currentPushSize)})...`));
+        const pushReason = pushSizeReached ? 'size limit reached' : 'final batch';
+        console.log(chalk.cyan(`\n🚀 Push ${totalPushes}: ${commitsInCurrentPush} commits (${formatFileSize(currentPushSize)}) - ${pushReason}`));
         
         try {
           await pushToRemote();
