@@ -8,6 +8,13 @@
 
 Intelligent batch commit system that automatically categorizes files by type, size, and importance for optimal Git performance.
 
+> # 🤔 What is this for?
+> Ever tried to run git add . on a massive, existing project for its first commit? It's slow, risky, and creates a single, unmanageable commit that's difficult to review or revert. DAC solves this problem.
+>
+> It's specifically designed for the initial versioning of large-scale projects. By intelligently categorizing and batching your files, it transforms a daunting task into a series of small, fast, and organized commits. Get your big project onto Git efficiently and safely.
+>
+> Note: This tool is for streamlining legitimate versioning, not for generating "fake" commits to inflate your contribution graph.
+
 ## 🚀 Quick Start
 
 ### Installation
